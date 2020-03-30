@@ -17,7 +17,7 @@ public class BaseFrontEnd {
 //To maximize browser
         driver.manage().window().maximize();
 //Implicit wait
-        driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+        driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
     }
 
 

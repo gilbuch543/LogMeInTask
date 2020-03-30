@@ -4,8 +4,10 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CalculatorHomePage {
@@ -15,22 +17,23 @@ public class CalculatorHomePage {
     protected long defaultWaitIntervals = 3;
     public Boolean markElementByDefault = true;
     private String homePageUrl ="https://web2.0calc.com/";
+    private int ExactMatchCounter = 0;
 
 
     By acceptCookiesButton = By.cssSelector("[id ='cookieconsentallowall']");
     String btnOptionInCalculator = "//*[@id='Btn%s']";
-
-     By localHistory = By.xpath("//*[@id='histframe']");
-
-
+     //By localHistory = By.xpath("//*[@id='histframe']");////*[contains(@class,'btn dropdown-toggle')]
+    By localHistory = By.xpath("//*[@id='histframe']");
 
 
-    By searchButton = By.xpath("//*[@id='searchbox-searchbutton']");
-    By SearchInputLocator = By.xpath("//*[@id='gs_lc50']/*[@aria-label='חיפוש במפות Google']");//Sorry driver show google maps in hebrew
-    By zoomInButton = By.xpath("//*[contains(@class,'widget-zoom-in')]");
-    String searchPageIndicator = "//*[contains(@class,'section-hero-header-title-description')]//*[text()='רומא']";
-    By Input = By.xpath("//*[@id='input']");
-    String x = "//*[@id='input']";
+
+    String attribute = "title";
+    //String equationWithoutResult = "//*[@data-inp=%s]";
+    String resultsInLinePartOne ="//*[@id='histframe']//*[@data-inp='%s']";
+    String resultsInLinePartTwo ="//*[@title='%s']";
+    String optionalResult = "//*[@id='histframe']//*[@title='%s']";
+    String opt = "//*[@id='histframe']//*[@title='5'][contains(@class,'r')]";
+    By result;
 
     public CalculatorHomePage(WebDriver driver) {
         this.driver = driver;
@@ -63,18 +66,25 @@ public class CalculatorHomePage {
         driver.findElement(locator).click();
         System.out.println(String.format("Clicked on %s",locator));
     }
+// List<WebElement>
+    public boolean isHistoryValidated(List<String>equations)
+    {////*[@id='histframe']//*[@data-inp='2+3']
+        List<WebElement> listOfElements = driver.findElement(localHistory).findElements(By.tagName("li"));
 
-    public WebElement getHistory(){
-        return driver.findElement(localHistory).findElement(By.xpath("//*[@id='histframe']//*[@title='%s']"));
-    }
 
+        //  driver.findElement(By.xpath("//*[@id='histframe']//*[@data-inp='2+3']")).findElement(By.xpath("//*[@title='5']")
+        int resultsSize = listOfElements.size();
 
-    public void highlightElement(By locator) {
-        WebElement elem = driver.findElement(locator);
-        // draw a border around the found element
-        if (driver instanceof JavascriptExecutor) {
-            ((JavascriptExecutor) driver).executeScript("arguments[0].style.border='3px solid red'", elem);
+       // for (WebElement currentElement : listOfElements){
+        for(WebElement element : listOfElements) {
+            for (String currentEquation : equations) {
+                if (isExactResult2(currentEquation,equations.get(2))) {
+                    ExactMatchCounter++;
+                }
+            }
         }
+
+        return ExactMatchCounter == resultsSize;
     }
 
 
@@ -87,18 +97,11 @@ public class CalculatorHomePage {
     }
 
     public Boolean waitForElementVisibility(By locator, Integer... timeout) {
-        return this.waitForElementVisibility(locator, markElementByDefault, timeout);
-    }
-
-    public Boolean waitForElementVisibility(By locator, Boolean activateMarkElement, Integer... timeout) {
         try {
             WebElement element = waitGenerator(timeout).until(ExpectedConditions.visibilityOfElementLocated(locator));
             if (element == null) {
                 return false;
             }
-           // if (activateMarkElement) {
-              //  highlightElement(locator);
-          //  }
             return true;
         } catch (Exception e) {
             return false;
@@ -109,41 +112,40 @@ public class CalculatorHomePage {
         return new WebDriverWait(driver, (timeout.length > 0) ? timeout[0] : defaultTimeout, defaultWaitIntervals);
     }
 
-    public void searchForLocation(String location) {
-        driver.findElement(SearchInputLocator).sendKeys(location);
+    public boolean isExactResult(String expectedResults) {
+        this.result = By.xpath(String.format(optionalResult,expectedResults));
+            try {//driver.findElement(By.xpath("//*[@data-inp='2+3']"))
+              String w =  driver.findElement(result).getAttribute(attribute);
+            }
+            catch (Exception e){
+                System.out.println(e);
+                System.out.println("\n" + String.format("Expected result = %s ,but did not receive it",expectedResults));
+                return false;
+            }
+            return true;
     }
-
-    public void zoomIn() {
-        driver.findElement(zoomInButton).click();
-    }
-
-    public String WaitForResults() {
-        WebDriverWait wait = new WebDriverWait(this.driver, 5L);
-        WebElement wb1 = wait.until(ExpectedConditions.presenceOfElementLocated(Input));
-        if (!wb1.isDisplayed()) {
-            System.out.println("Not finished loading");
+    public boolean isExactResult2(String expectedResults, String equation) {
+        this.result = By.xpath(String.format(optionalResult,expectedResults));
+        this.result = By.xpath(String.format(optionalResult,equation));
+        try {
+            //String w =  driver.findElement(result).getAttribute(attribute);
+            WebElement w = driver.findElement(result);
         }
-        wait.until(ExpectedConditions.attributeContains(By.id("title"),"value", "5"));
-
-        return wb1.getText();
+        catch (Exception e){
+            System.out.println(e);
+            System.out.println("\n" + String.format("Expected result = %s ,but did not receive it",expectedResults));
+            return false;
+        }
+        return true;
     }
 
-    public void type(String item) {
-        By clickOnNumber = By.xpath(String.format(btnOptionInCalculator,item));
-        clickOnItem(clickOnNumber);
 
+    public void typeInCalculator(String...items) {
 
+       for(String currentItem : items){
+            By clickOnNumber = By.xpath(String.format(btnOptionInCalculator, currentItem));
+            clickOnItem(clickOnNumber);
+        }
     }
 
-   // public void validateResults() {
-     //  Integer result = getResult();
-
-  //  }
-
-  /*  public Integer getResult(Number result) {
-        WebDriverWait wait = new WebDriverWait(this.driver, 5L);
-        WebElement wb1 =wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(searchPageIndicator)));
-        wait.until(ExpectedConditions.attributeContains(By.id("input"),"value", result));
-        return driver.findElement(Input).getAttribute("value");
-   // }*/
 }
