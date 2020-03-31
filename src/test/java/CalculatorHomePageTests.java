@@ -59,7 +59,7 @@ public class CalculatorHomePageTests extends BaseFrontEnd {
         homePage.typeInCalculator(CalculatorOperatorType.ClearScreen.getValue());
         currentFormula = new Formula(Number.One.getValue() + Number.Zero.getValue() + MathOperatorType.getOperatorByMark(MathOperatorType.Decrement) + Number.Two.getValue(), Number.Eight.getValue());
         allFormaulasParameters.add(currentFormula);
-        homePage.typeInCalculator(Number.One.getValue(), Number.Zero.getValue(), MathOperatorType.Decrement.getValue(), Number.Two.getValue());
+        homePage.typeInCalculator(Number.One.getValue(), Number.Zero.getValue (), MathOperatorType.Decrement.getValue(), Number.Two.getValue());
         homePage.typeInCalculator(MathOperatorType.Equal.getValue());
 
         // 5. Wait for results and verify results are as expected '8'

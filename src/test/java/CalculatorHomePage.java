@@ -1,3 +1,4 @@
+import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -17,15 +18,13 @@ public class CalculatorHomePage {
     private int ExactMatchCounter = 0;
 
 
-    By acceptCookiesButton = By.cssSelector("[id ='cookieconsentallowall']");
+    By acceptCookiesButtonLocator = By.cssSelector("[id ='cookieconsentallowall']");
     String btnOptionInCalculator = "//*[@id='Btn%s']";
-    By localHistory = By.xpath("//*[@id='histframe']");
-
-
+    By localHistoryLocator = By.xpath("//*[@id='histframe']");
     String attribute = "title";
     String resultsInLinePartOne = "//*[@id='histframe']//*[@data-inp='%s']";
     String resultsInLinePartTwo = "//*[@id='histframe']//*[@title='%s']";
-    String optionalResult = "//*[@id='histframe']//*[@title='%s']";
+    By homePageLocator =By.xpath("//*[@id='menuhome']//*[text()='Home']");
     By result;
 
     public CalculatorHomePage(WebDriver driver) {
@@ -35,20 +34,13 @@ public class CalculatorHomePage {
 
     public void navigate() {
         driver.navigate().to(homePageUrl);
+        Assert.assertTrue("Calculator home page not loaded",isDisplayed(homePageLocator));
         clickAcceptCookies();
     }
 
 
     public void clickAcceptCookies() {
-        try {
-            System.out.println("Trying to find button");
-            if (isDisplayed(acceptCookiesButton, 3)) {
-                System.out.println(String.format("element %s displayed", acceptCookiesButton));
-                clickOnItem(acceptCookiesButton);
-            }
-        } catch (Exception e) {
-            System.out.println(String.format("Unable to find button %s", acceptCookiesButton));
-        }
+        clickOnItem(acceptCookiesButtonLocator);
     }
 
 
@@ -60,10 +52,11 @@ public class CalculatorHomePage {
 
     public boolean isHistoryValidated(ArrayList<Formula> formulas) {
         /**
-         *          get list of formulas and verify equation and result in history list
+         *          get list of formulas and verify equation and results in history list - calculator page
          *
          */
-        List<WebElement> listOfElements = driver.findElement(localHistory).findElements(By.tagName("li"));
+        List<WebElement> listOfElements = driver.findElement(localHistoryLocator).findElements(By.tagName("li"));
+
         int index = 0;
             for (WebElement element : listOfElements) {
                 System.out.println(String.format("Checking equation value : %s ", formulas.get(index).getEquation()));
@@ -73,7 +66,7 @@ public class CalculatorHomePage {
                     index++;
                 }
             }
-        return formulas.size() == ExactMatchCounter;
+        return formulas.size() == ExactMatchCounter && listOfElements.size() == formulas.size();
     }
 
 

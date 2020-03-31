@@ -8,7 +8,6 @@ import java.util.concurrent.TimeUnit;
 public class BaseFrontEnd {
 
     public static WebDriver driver = null;
-    //protected static PageUtils basePage;
 
     @BeforeClass
     public static void BaseFrontEnd() {
