@@ -7,10 +7,10 @@ public enum CalculatorOperatorType {
     private String value;
 
 
-
     CalculatorOperatorType(String value) {
         this.value = value;
     }
+
     public String getValue() {
         return value;
     }

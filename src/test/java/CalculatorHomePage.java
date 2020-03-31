@@ -1,10 +1,8 @@
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.ArrayList;
@@ -15,24 +13,19 @@ public class CalculatorHomePage {
     WebDriver driver;
     final static public Integer defaultTimeout = 10;
     protected long defaultWaitIntervals = 3;
-    public Boolean markElementByDefault = true;
-    private String homePageUrl ="https://web2.0calc.com/";
+    private String homePageUrl = "https://web2.0calc.com/";
     private int ExactMatchCounter = 0;
 
 
     By acceptCookiesButton = By.cssSelector("[id ='cookieconsentallowall']");
     String btnOptionInCalculator = "//*[@id='Btn%s']";
-     //By localHistory = By.xpath("//*[@id='histframe']");////*[contains(@class,'btn dropdown-toggle')]
     By localHistory = By.xpath("//*[@id='histframe']");
 
 
-
     String attribute = "title";
-    //String equationWithoutResult = "//*[@data-inp=%s]";
-    String resultsInLinePartOne ="//*[@id='histframe']//*[@data-inp='%s']";
-    String resultsInLinePartTwo ="//*[@title='%s']";
+    String resultsInLinePartOne = "//*[@id='histframe']//*[@data-inp='%s']";
+    String resultsInLinePartTwo = "//*[@id='histframe']//*[@title='%s']";
     String optionalResult = "//*[@id='histframe']//*[@title='%s']";
-    String opt = "//*[@id='histframe']//*[@title='5'][contains(@class,'r')]";
     By result;
 
     public CalculatorHomePage(WebDriver driver) {
@@ -46,7 +39,7 @@ public class CalculatorHomePage {
     }
 
 
-    public void clickAcceptCookies(){
+    public void clickAcceptCookies() {
         try {
             System.out.println("Trying to find button");
             if (isDisplayed(acceptCookiesButton, 3)) {
@@ -59,32 +52,28 @@ public class CalculatorHomePage {
     }
 
 
-
-
     public void clickOnItem(By locator) {
-        System.out.println(String.format("Trying to click on %s",locator));
+        System.out.println(String.format("Trying to click on %s", locator));
         driver.findElement(locator).click();
-        System.out.println(String.format("Clicked on %s",locator));
+        System.out.println(String.format("Clicked on %s", locator));
     }
-// List<WebElement>
-    public boolean isHistoryValidated(List<String>equations)
-    {////*[@id='histframe']//*[@data-inp='2+3']
+
+    public boolean isHistoryValidated(ArrayList<Formula> formulas) {
+        /**
+         *          get list of formulas and verify equation and result in history list
+         *
+         */
         List<WebElement> listOfElements = driver.findElement(localHistory).findElements(By.tagName("li"));
-
-
-        //  driver.findElement(By.xpath("//*[@id='histframe']//*[@data-inp='2+3']")).findElement(By.xpath("//*[@title='5']")
-        int resultsSize = listOfElements.size();
-
-       // for (WebElement currentElement : listOfElements){
-        for(WebElement element : listOfElements) {
-            for (String currentEquation : equations) {
-                if (isExactResult2(currentEquation,equations.get(2))) {
+        int index = 0;
+            for (WebElement element : listOfElements) {
+                System.out.println(String.format("Checking equation value : %s ", formulas.get(index).getEquation()));
+                System.out.println(String.format("Checking equation result : %s ", formulas.get(index).getResult()));
+                if (isEquationValidate(formulas.get(index).getEquation(), element) && isResultValidate(formulas.get(index).getResult(), element)) {
                     ExactMatchCounter++;
+                    index++;
                 }
             }
-        }
-
-        return ExactMatchCounter == resultsSize;
+        return formulas.size() == ExactMatchCounter;
     }
 
 
@@ -113,36 +102,42 @@ public class CalculatorHomePage {
     }
 
     public boolean isExactResult(String expectedResults) {
-        this.result = By.xpath(String.format(optionalResult,expectedResults));
-            try {//driver.findElement(By.xpath("//*[@data-inp='2+3']"))
-              String w =  driver.findElement(result).getAttribute(attribute);
-            }
-            catch (Exception e){
-                System.out.println(e);
-                System.out.println("\n" + String.format("Expected result = %s ,but did not receive it",expectedResults));
-                return false;
-            }
-            return true;
+        return isResultValidate(expectedResults, null);
     }
-    public boolean isExactResult2(String expectedResults, String equation) {
-        this.result = By.xpath(String.format(optionalResult,expectedResults));
-        this.result = By.xpath(String.format(optionalResult,equation));
+
+
+    public boolean isEquationValidate(String equation, WebElement element) {
+        this.result = By.xpath(String.format(resultsInLinePartOne, equation));
         try {
-            //String w =  driver.findElement(result).getAttribute(attribute);
-            WebElement w = driver.findElement(result);
-        }
-        catch (Exception e){
+
+            WebElement w = element.findElement(result);
+        } catch (Exception e) {
             System.out.println(e);
-            System.out.println("\n" + String.format("Expected result = %s ,but did not receive it",expectedResults));
+            System.out.println("\n" + String.format("Expected Equation  = %s ,but no matching element", equation));
+            return false;
+        }
+        return true;
+    }
+
+    public boolean isResultValidate(String equation, WebElement element) {
+        this.result = By.xpath(String.format(resultsInLinePartTwo, equation));
+        try {
+            if (element == null) {
+                driver.findElement(result).getAttribute(attribute);
+            } else {
+                element.findElement(result);
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+            System.out.println("\n" + String.format("Expected result = %s ,,but no matching element", equation));
             return false;
         }
         return true;
     }
 
 
-    public void typeInCalculator(String...items) {
-
-       for(String currentItem : items){
+    public void typeInCalculator(String... items) {
+        for (String currentItem : items) {
             By clickOnNumber = By.xpath(String.format(btnOptionInCalculator, currentItem));
             clickOnItem(clickOnNumber);
         }
