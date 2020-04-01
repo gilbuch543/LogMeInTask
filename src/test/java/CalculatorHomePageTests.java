@@ -104,6 +104,6 @@ public class CalculatorHomePageTests extends BaseFrontEnd {
                 homePage.isResultValidated(expectedResultEquationFour));
 
         // 10. Validate correct history of all formulas above
-        Assert.assertTrue("History no validated", homePage.isHistoryValidated(allFormulasParameters));
+        Assert.assertTrue("Validation failed, History should match all formulas", homePage.isHistoryValidated(allFormulasParameters));
     }
 }
