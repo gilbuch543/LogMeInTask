@@ -37,7 +37,7 @@ public class CalculatorHomePageTests extends BaseFrontEnd {
          *
          */
 
-        ArrayList<Formula> allFormaulasParameters = new ArrayList<Formula>();
+        ArrayList<Formula> allFormulasParameters = new ArrayList<Formula>();
 
         // 1. Open/Navigate to calculator home page(accept cookies in navigation)
         homePage.navigate();
@@ -48,7 +48,7 @@ public class CalculatorHomePageTests extends BaseFrontEnd {
                 Number.Three.getValue());
 
         Formula currentFormula = new Formula(Number.Two.getValue() + MathOperatorType.getOperatorByMark(MathOperatorType.Increment) + Number.Three.getValue(), (Number.Five.getValue()));
-        allFormaulasParameters.add(currentFormula);
+        allFormulasParameters.add(currentFormula);
         homePage.typeInCalculator(MathOperatorType.Equal.getValue());
 
         // 3. Wait for results and verify results are as expected '5'
@@ -58,7 +58,7 @@ public class CalculatorHomePageTests extends BaseFrontEnd {
         //  4. Calculate '10 - 2 = 8'
         homePage.typeInCalculator(CalculatorOperatorType.ClearScreen.getValue());
         currentFormula = new Formula(Number.One.getValue() + Number.Zero.getValue() + MathOperatorType.getOperatorByMark(MathOperatorType.Decrement) + Number.Two.getValue(), Number.Eight.getValue());
-        allFormaulasParameters.add(currentFormula);
+        allFormulasParameters.add(currentFormula);
         homePage.typeInCalculator(Number.One.getValue(), Number.Zero.getValue(), MathOperatorType.Decrement.getValue(), Number.Two.getValue());
         homePage.typeInCalculator(MathOperatorType.Equal.getValue());
 
@@ -71,7 +71,7 @@ public class CalculatorHomePageTests extends BaseFrontEnd {
         currentFormula = new Formula(MathOperatorType.getOperatorByMark(MathOperatorType.LeftParentheses) + Number.One.getValue() + Number.Zero.getValue()
                 + MathOperatorType.getOperatorByMark(MathOperatorType.Decrement) + Number.Two.getValue() + MathOperatorType.getOperatorByMark(MathOperatorType.RightParentheses) +
                 MathOperatorType.getOperatorByMark(MathOperatorType.multiply) + Number.Two.getValue(), realResultEquationThree);
-        allFormaulasParameters.add(currentFormula);
+        allFormulasParameters.add(currentFormula);
         homePage.typeInCalculator(MathOperatorType.LeftParentheses.getValue(),
                 Number.One.getValue(),
                 Number.Zero.getValue(),
@@ -92,7 +92,7 @@ public class CalculatorHomePageTests extends BaseFrontEnd {
         currentFormula = new Formula(MathOperatorType.getOperatorByMark(MathOperatorType.Sine) +
                 MathOperatorType.getOperatorByMark(MathOperatorType.LeftParentheses) +
                 Number.Three.getValue() + Number.Zero.getValue() + MathOperatorType.getOperatorByMark(MathOperatorType.RightParentheses), expectedResultEquationFour);
-        allFormaulasParameters.add(currentFormula);
+        allFormulasParameters.add(currentFormula);
         homePage.typeInCalculator(MathOperatorType.Sine.getValue(),
                 Number.Three.getValue(), Number.Zero.getValue(),
                 MathOperatorType.RightParentheses.getValue());
@@ -104,6 +104,6 @@ public class CalculatorHomePageTests extends BaseFrontEnd {
                 homePage.isResultValidated(expectedResultEquationFour));
 
         // 10. Validate correct history of all formulas above
-        Assert.assertTrue("History no validated", homePage.isHistoryValidated(allFormaulasParameters));
+        Assert.assertTrue("History no validated", homePage.isHistoryValidated(allFormulasParameters));
     }
 }
