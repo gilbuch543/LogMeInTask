@@ -83,7 +83,7 @@ public class CalculatorHomePageTests extends BaseFrontEnd {
         homePage.typeInCalculator(MathOperatorType.Equal.getValue());
 
         // 7. Wait for results and verify result isn't '20' (result not as expected '20')'
-        Assert.assertFalse(String.format("result of: (%s-%s)*%s = %s , wrong result"
+        Assert.assertFalse(String.format("Result of: (%s-%s)*%s = %s , wrong result"
                 , Number.Ten.getValue(), Number.Two.getValue(), Number.Two.getValue(), expectedResultEquationThree),
                 homePage.isResultValidated(expectedResultEquationThree));
 
@@ -99,7 +99,7 @@ public class CalculatorHomePageTests extends BaseFrontEnd {
         homePage.typeInCalculator(MathOperatorType.Equal.getValue());
 
         // 9. Wait for results and verify results are as expected '0.5'
-        Assert.assertTrue(String.format("result of : %s(%s) =%s"
+        Assert.assertTrue(String.format("Result of : %s(%s) =%s"
                 , MathOperatorType.Sine.getValue(), Number.Three.getValue() + Number.Zero.getValue(), expectedResultEquationFour),
                 homePage.isResultValidated(expectedResultEquationFour));
 
