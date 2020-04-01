@@ -8,10 +8,11 @@ import java.util.concurrent.TimeUnit;
 public class BaseFrontEnd {
 
     public static WebDriver driver = null;
+    public static String driverPath = "\\src\\test\\java\\drivers\\chromedriver.exe";
 
     @BeforeClass
     public static void BaseFrontEnd() {
-        System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir") + "\\src\\test\\java\\drivers\\chromedriver.exe");
+        System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir") + driverPath);
         driver = new ChromeDriver();
 //To maximize browser
         driver.manage().window().maximize();

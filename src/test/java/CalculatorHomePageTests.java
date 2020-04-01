@@ -33,7 +33,7 @@ public class CalculatorHomePageTests extends BaseFrontEnd {
          *          7. Wait for results and verify result isn't '20' (result not as expected '20')
          *          8. Calculate 'Sin(30)'
          *          9. Wait for results and verify results are as expected '0.5'
-         *          10. Get all equations and verify all equations in history are correct
+         *          10. Validate correct history of all formulas above
          *
          */
 
@@ -52,19 +52,19 @@ public class CalculatorHomePageTests extends BaseFrontEnd {
         homePage.typeInCalculator(MathOperatorType.Equal.getValue());
 
         // 3. Wait for results and verify results are as expected '5'
-        Assert.assertTrue(String.format("result should be %s+%s =%s", Number.Two.getValue(), Number.Three.getValue(), Number.Five.getValue()),
-                homePage.isExactResult(Number.Five.getValue()));
+        Assert.assertTrue(String.format("Result should be %s+%s =%s", Number.Two.getValue(), Number.Three.getValue(), Number.Five.getValue()),
+                homePage.isResultValidated(Number.Five.getValue()));
 
         //  4. Calculate '10 - 2 = 8'
         homePage.typeInCalculator(CalculatorOperatorType.ClearScreen.getValue());
         currentFormula = new Formula(Number.One.getValue() + Number.Zero.getValue() + MathOperatorType.getOperatorByMark(MathOperatorType.Decrement) + Number.Two.getValue(), Number.Eight.getValue());
         allFormaulasParameters.add(currentFormula);
-        homePage.typeInCalculator(Number.One.getValue(), Number.Zero.getValue (), MathOperatorType.Decrement.getValue(), Number.Two.getValue());
+        homePage.typeInCalculator(Number.One.getValue(), Number.Zero.getValue(), MathOperatorType.Decrement.getValue(), Number.Two.getValue());
         homePage.typeInCalculator(MathOperatorType.Equal.getValue());
 
         // 5. Wait for results and verify results are as expected '8'
-        Assert.assertTrue(String.format("result should be %s-%s =%s", Number.Ten.getValue(), Number.Two.getValue(), Number.Eight.getValue()),
-                homePage.isExactResult(Number.Eight.getValue()));
+        Assert.assertTrue(String.format("Result should be %s-%s =%s", Number.Ten.getValue(), Number.Two.getValue(), Number.Eight.getValue()),
+                homePage.isResultValidated(Number.Eight.getValue()));
 
         // 6. Calculate '(10 - 2)*2! = 20'
         homePage.typeInCalculator(CalculatorOperatorType.ClearScreen.getValue());
@@ -83,9 +83,9 @@ public class CalculatorHomePageTests extends BaseFrontEnd {
         homePage.typeInCalculator(MathOperatorType.Equal.getValue());
 
         // 7. Wait for results and verify result isn't '20' (result not as expected '20')'
-        Assert.assertFalse(String.format("result of: (%s-%s)*%s  is not %s"
+        Assert.assertFalse(String.format("result of: (%s-%s)*%s = %s , wrong result"
                 , Number.Ten.getValue(), Number.Two.getValue(), Number.Two.getValue(), expectedResultEquationThree),
-                homePage.isExactResult(expectedResultEquationThree));
+                homePage.isResultValidated(expectedResultEquationThree));
 
         // 8. Calculate 'Sin(30)'
         homePage.typeInCalculator(CalculatorOperatorType.ClearScreen.getValue());
@@ -101,8 +101,9 @@ public class CalculatorHomePageTests extends BaseFrontEnd {
         // 9. Wait for results and verify results are as expected '0.5'
         Assert.assertTrue(String.format("result of : %s(%s) =%s"
                 , MathOperatorType.Sine.getValue(), Number.Three.getValue() + Number.Zero.getValue(), expectedResultEquationFour),
-                homePage.isExactResult(expectedResultEquationFour));
-        // 10. Get all equations and verify all equations in history are correct
+                homePage.isResultValidated(expectedResultEquationFour));
+
+        // 10. Validate correct history of all formulas above
         Assert.assertTrue("History no validated", homePage.isHistoryValidated(allFormaulasParameters));
     }
 }

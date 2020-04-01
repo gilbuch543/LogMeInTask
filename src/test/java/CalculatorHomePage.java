@@ -24,7 +24,7 @@ public class CalculatorHomePage {
     String attribute = "title";
     String resultsInLinePartOne = "//*[@id='histframe']//*[@data-inp='%s']";
     String resultsInLinePartTwo = "//*[@id='histframe']//*[@title='%s']";
-    By homePageLocator =By.xpath("//*[@id='menuhome']//*[text()='Home']");
+    By homePageLocator = By.xpath("//*[@id='menuhome']//*[text()='Home']");
     By result;
 
     public CalculatorHomePage(WebDriver driver) {
@@ -34,7 +34,7 @@ public class CalculatorHomePage {
 
     public void navigate() {
         driver.navigate().to(homePageUrl);
-        Assert.assertTrue("Calculator home page not loaded",isDisplayed(homePageLocator));
+        Assert.assertTrue("Calculator home page not loaded", isDisplayed(homePageLocator));
         clickAcceptCookies();
     }
 
@@ -58,14 +58,14 @@ public class CalculatorHomePage {
         List<WebElement> listOfElements = driver.findElement(localHistoryLocator).findElements(By.tagName("li"));
 
         int index = 0;
-            for (WebElement element : listOfElements) {
-                System.out.println(String.format("Checking equation value : %s ", formulas.get(index).getEquation()));
-                System.out.println(String.format("Checking equation result : %s ", formulas.get(index).getResult()));
-                if (isEquationValidate(formulas.get(index).getEquation(), element) && isResultValidate(formulas.get(index).getResult(), element)) {
-                    ExactMatchCounter++;
-                    index++;
-                }
+        for (WebElement element : listOfElements) {
+            System.out.println(String.format("Checking equation : %s ", formulas.get(index).getEquation()));
+            System.out.println(String.format("Checking equation result : %s ", formulas.get(index).getResult()));
+            if (isEquationValidated(formulas.get(index).getEquation(), element) && isResultValidated(formulas.get(index).getResult(), element)) {
+                ExactMatchCounter++;
+                index++;
             }
+        }
         return formulas.size() == ExactMatchCounter && listOfElements.size() == formulas.size();
     }
 
@@ -94,12 +94,12 @@ public class CalculatorHomePage {
         return new WebDriverWait(driver, (timeout.length > 0) ? timeout[0] : defaultTimeout, defaultWaitIntervals);
     }
 
-    public boolean isExactResult(String expectedResults) {
-        return isResultValidate(expectedResults, null);
+    public boolean isResultValidated(String expectedResults) {
+        return isResultValidated(expectedResults, null);
     }
 
 
-    public boolean isEquationValidate(String equation, WebElement element) {
+    public boolean isEquationValidated(String equation, WebElement element) {
         this.result = By.xpath(String.format(resultsInLinePartOne, equation));
         try {
 
@@ -112,7 +112,7 @@ public class CalculatorHomePage {
         return true;
     }
 
-    public boolean isResultValidate(String equation, WebElement element) {
+    public boolean isResultValidated(String equation, WebElement element) {
         this.result = By.xpath(String.format(resultsInLinePartTwo, equation));
         try {
             if (element == null) {
@@ -122,7 +122,7 @@ public class CalculatorHomePage {
             }
         } catch (Exception e) {
             System.out.println(e);
-            System.out.println("\n" + String.format("Expected result = %s ,,but no matching element", equation));
+            System.out.println("\n" + String.format("Expected result = %s ,but no matching element", equation));
             return false;
         }
         return true;
