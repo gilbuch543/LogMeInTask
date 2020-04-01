@@ -17,7 +17,7 @@ public class CalculatorHomePage {
     private String homePageUrl = "https://web2.0calc.com/";
     private int ExactMatchCounter = 0;
 
-
+    By result;
     By acceptCookiesButtonLocator = By.cssSelector("[id ='cookieconsentallowall']");
     String btnOptionInCalculator = "//*[@id='Btn%s']";
     By localHistoryLocator = By.xpath("//*[@id='histframe']");
@@ -25,7 +25,7 @@ public class CalculatorHomePage {
     String resultsInLinePartOne = "//*[@id='histframe']//*[@data-inp='%s']";
     String resultsInLinePartTwo = "//*[@id='histframe']//*[@title='%s']";
     By homePageLocator = By.xpath("//*[@id='menuhome']//*[text()='Home']");
-    By result;
+
 
     public CalculatorHomePage(WebDriver driver) {
         this.driver = driver;
